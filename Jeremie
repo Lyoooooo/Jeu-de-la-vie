@@ -1,0 +1,49 @@
+
+def main():
+    # Initialisation
+    pygame.init()
+    largeur, hauteur = 800, 600
+    screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+    taille_cellule = 20
+    is_playing = False
+    
+    # Initialiser les boutons
+    play_button, zoom_in_button, zoom_out_button = init_controls(largeur, hauteur)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+                
+            # Gestion des contrôles
+            taille_cellule, is_playing = handle_controls(
+                event, 
+                play_button, 
+                zoom_in_button, 
+                zoom_out_button, 
+                taille_cellule, 
+                is_playing
+            )
+            
+            # Gestion du redimensionnement de la fenêtre
+            if event.type == pygame.VIDEORESIZE:
+                largeur, hauteur = event.size
+                screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+                play_button, zoom_in_button, zoom_out_button = init_controls(largeur, hauteur)
+        
+        # Mise à jour de la grille si le jeu est en cours
+        if is_playing:
+            # Ton code de mise à jour de la matrice ici
+            pass
+            
+        # Effacer l'écran
+        screen.fill((0, 0, 0))
+        
+        # Dessiner la matrice
+        draw_matrix(screen, matrix, taille_cellule, couleur_vivant, couleur_mort, couleur_grille)
+        
+        # Dessiner les contrôles
+        draw_controls(screen, play_button, zoom_in_button, zoom_out_button, is_playing)
+        
+        pygame.display.flip()
