@@ -52,10 +52,12 @@ def main_game_loop(matrix, save_filename=None):
         # Afficher la grille de jeu
         draw_matrix(screen, matrix, TAILLE_CELLULE, COULEUR_VIVANT, COULEUR_MORT, COULEUR_GRILLE)
         
-        # Afficher les boutons Pause/Play et Sauvegarder
+        # Afficher les boutons Pause/Play, Zoom+/Zoom- et Sauvegarder
         button_pause_rect = draw_button(screen, font, "Play" if paused else "Pause", 10, HAUTEUR + 10,)
         button_save_rect = draw_button(screen, font, "Sauvegarder", 10, HAUTEUR + 50)
         temps_ecoule = draw_button(screen, font, str(temps), 10, HAUTEUR - 40)
+        button_zoom_in_rect = draw_button(screen, font, "Zoom +", 200, HAUTEUR + 10)
+        button_zoom_out_rect = draw_button(screen, font, "Zoom -", 200, HAUTEUR + 50)
         
         # Mettre à jour l'affichage
         pygame.display.flip()
@@ -97,6 +99,14 @@ def main_game_loop(matrix, save_filename=None):
                     if choice == "menu":
                         # Retourner au menu principal si l'utilisateur le souhaite
                         return
+                    
+                     # Gestion des clics sur les boutons de zoom
+                elif button_zoom_in_rect.collidepoint(x, y):
+                    taille_cellule = min(taille_cellule + 2, 40)  # Zoom avant (limité à 40)
+                elif button_zoom_out_rect.collidepoint(x, y):
+                    taille_cellule = max(taille_cellule - 2, 2)  # Zoom arrière (limité à 2)
+
+
                 elif y < HAUTEUR:
                     # Permet à l'utilisateur de cliquer sur une cellule pour la rendre vivante ou morte
                     n = y // TAILLE_CELLULE
