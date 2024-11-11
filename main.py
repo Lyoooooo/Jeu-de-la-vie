@@ -1,5 +1,6 @@
 import numpy as np
 import pygame
+import time
 from moteur_jeu.gestion_matrice import init_matrix
 from moteur_jeu.evaluation import evaluate
 from interface.affichage_grille import draw_matrix
@@ -7,13 +8,14 @@ from interface.boutons import draw_button
 from interface.ecran_demarrage import start_screen, select_save_screen, save_game_screen, confirmation_screen
 from sauvegarde.chargement import load_matrix, list_saves
 from sauvegarde.sauvegarde import save_matrix
+from analyse_donnees.analyse import save_data, creer_graph
 
 # Initialiser pygame
 pygame.init()
 
 # Dimensions de la fenêtre et des cellules
 TAILLE_CELLULE = 10  # Taille de chaque cellule dans la grille
-TAILLE_GRILLE = 30  # Nombre de cellules par côté
+TAILLE_GRILLE = 60  # Nombre de cellules par côté
 LARGEUR = HAUTEUR = TAILLE_GRILLE * TAILLE_CELLULE *1.5 # Taille de la grille
 LARGEUR_TOTALE = LARGEUR  # Largeur totale de la fenêtre
 HAUTEUR_TOTALE = HAUTEUR + 100  # Hauteur totale de la fenêtre avec espace pour les boutons
@@ -36,8 +38,14 @@ def main_game_loop(matrix, save_filename=None):
     paused = False  # Variable pour contrôler la pause du jeu
     running = True  # Variable pour contrôler la boucle principale du jeu
     clock = pygame.time.Clock()  # Objet pour contrôler la vitesse d'exécution
-
+    debut = time.perf_counter() # Calculer le temps d'execution
+    temps = 0 # Initialiser le temps d'execution à 0
+    temps_paused = 0 # Initialiser le temps perdu dans les pauses
+    data = [[0],[0]]
     while running:
+
+        
+        
         # Remplir l'arrière-plan de la fenêtre
         screen.fill(COULEUR_MORT)
         
@@ -45,8 +53,9 @@ def main_game_loop(matrix, save_filename=None):
         draw_matrix(screen, matrix, TAILLE_CELLULE, COULEUR_VIVANT, COULEUR_MORT, COULEUR_GRILLE)
         
         # Afficher les boutons Pause/Play et Sauvegarder
-        button_pause_rect = draw_button(screen, font, "Play" if paused else "Pause", 10, HAUTEUR + 10)
+        button_pause_rect = draw_button(screen, font, "Play" if paused else "Pause", 10, HAUTEUR + 10,)
         button_save_rect = draw_button(screen, font, "Sauvegarder", 10, HAUTEUR + 50)
+        temps_ecoule = draw_button(screen, font, str(temps), 10, HAUTEUR - 40)
         
         # Mettre à jour l'affichage
         pygame.display.flip()
@@ -54,12 +63,16 @@ def main_game_loop(matrix, save_filename=None):
         # Si le jeu n'est pas en pause, évaluer la prochaine génération de la matrice
         if not paused:
             matrix = evaluate(matrix)
+            #Calculer le temps d'execution
+            temps = round(temps_paused + time.perf_counter() - debut, 2)
 
         # Gérer les événements utilisateur
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 # Quitter le jeu si l'utilisateur ferme la fenêtre
+                print(data)
                 pygame.quit()
+                creer_graph(data)
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Gérer les clics de souris
@@ -67,6 +80,9 @@ def main_game_loop(matrix, save_filename=None):
                 if button_pause_rect.collidepoint(x, y):
                     # Basculer l'état de pause si on clique sur le bouton Pause/Play
                     paused = not paused
+                    if paused == False:
+                        debut = time.perf_counter()
+                        temps_paused = temps
                 elif button_save_rect.collidepoint(x, y):
                     # Sauvegarder la partie
                     if save_filename:
@@ -86,9 +102,13 @@ def main_game_loop(matrix, save_filename=None):
                     n = y // TAILLE_CELLULE
                     m = x // TAILLE_CELLULE
                     matrix[n, m] = 1 if matrix[n, m] == 0 else 0
+        # Set les données pour analyse
+        data = save_data(temps, data, matrix)
 
         # Limiter la vitesse de la boucle
         clock.tick(10)
+
+        
 
 # Boucle du menu principal
 while True:
