@@ -43,9 +43,6 @@ def main_game_loop(matrix, save_filename=None):
     temps_paused = 0 # Initialiser le temps perdu dans les pauses
     data = [[0],[0]]
     while running:
-
-        
-        
         # Remplir l'arrière-plan de la fenêtre
         screen.fill(COULEUR_MORT)
         
@@ -63,7 +60,9 @@ def main_game_loop(matrix, save_filename=None):
         # Si le jeu n'est pas en pause, évaluer la prochaine génération de la matrice
         if not paused:
             matrix = evaluate(matrix)
-            #Calculer le temps d'execution
+            # Calculer le temps de calcul des celules
+
+            # Calculer le temps d'execution depuis le début
             temps = round(temps_paused + time.perf_counter() - debut, 2)
 
         # Gérer les événements utilisateur
@@ -97,7 +96,7 @@ def main_game_loop(matrix, save_filename=None):
                     if choice == "menu":
                         # Retourner au menu principal si l'utilisateur le souhaite
                         return
-                elif y < HAUTEUR:
+                elif y < TAILLE_GRILLE * TAILLE_CELLULE and x < TAILLE_GRILLE * TAILLE_CELLULE:
                     # Permet à l'utilisateur de cliquer sur une cellule pour la rendre vivante ou morte
                     n = y // TAILLE_CELLULE
                     m = x // TAILLE_CELLULE
