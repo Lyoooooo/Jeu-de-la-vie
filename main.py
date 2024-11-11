@@ -8,14 +8,15 @@ from interface.boutons import draw_button
 from interface.ecran_demarrage import start_screen, select_save_screen, save_game_screen, confirmation_screen
 from sauvegarde.chargement import load_matrix, list_saves
 from sauvegarde.sauvegarde import save_matrix
-from analyse_donnees.analyse import save_data, creer_graph
+from analyse_donnees.analyse import save_data, creer_graph, creer_graph_exec
+from interface.stats import draw_value
 
 # Initialiser pygame
 pygame.init()
 
 # Dimensions de la fenêtre et des cellules
-TAILLE_CELLULE = 10  # Taille de chaque cellule dans la grille
-TAILLE_GRILLE = 60  # Nombre de cellules par côté
+TAILLE_CELLULE = 5  # Taille de chaque cellule dans la grille
+TAILLE_GRILLE = 100  # Nombre de cellules par côté
 LARGEUR = HAUTEUR = TAILLE_GRILLE * TAILLE_CELLULE *1.5 # Taille de la grille
 LARGEUR_TOTALE = LARGEUR  # Largeur totale de la fenêtre
 HAUTEUR_TOTALE = HAUTEUR + 100  # Hauteur totale de la fenêtre avec espace pour les boutons
@@ -41,8 +42,9 @@ def main_game_loop(matrix, save_filename=None):
     debut = time.perf_counter() # Calculer le temps d'execution
     temps = 0 # Initialiser le temps d'execution à 0
     temps_paused = 0 # Initialiser le temps perdu dans les pauses
-    data = [[0],[0]]
+    data = [[0],[0],[0],[TAILLE_GRILLE]]
     taille_cellule = TAILLE_CELLULE
+    exect_time = 0
 
     while running:
         # Remplir l'arrière-plan de la fenêtre
@@ -54,7 +56,8 @@ def main_game_loop(matrix, save_filename=None):
         # Afficher les boutons Pause/Play, Zoom+/Zoom- et Sauvegarder
         button_pause_rect = draw_button(screen, font, "Play" if paused else "Pause", 10, HAUTEUR + 10,)
         button_save_rect = draw_button(screen, font, "Sauvegarder", 10, HAUTEUR + 50)
-        temps_ecoule = draw_button(screen, font, str(temps), 10, HAUTEUR - 40)
+        draw_value(screen, "Temps : ", str(temps), 10, 5)
+        draw_value(screen, "Temps de calcul : ", str(exect_time), 120,5)
         button_zoom_in_rect = draw_button(screen, font, "Zoom +", 200, HAUTEUR + 10)
         button_zoom_out_rect = draw_button(screen, font, "Zoom -", 200, HAUTEUR + 50)
         
@@ -63,8 +66,12 @@ def main_game_loop(matrix, save_filename=None):
 
         # Si le jeu n'est pas en pause, évaluer la prochaine génération de la matrice
         if not paused:
+            # Noter le moment de début du calcul des cellules 
+            exec_time_start = time.perf_counter()
+            
             matrix = evaluate(matrix)
-            # Calculer le temps de calcul des celules
+            # Calculer le temps de calcul des cellules
+            exect_time = round(time.perf_counter() - exec_time_start, 5) 
 
             # Calculer le temps d'execution depuis le début
             temps = round(temps_paused + time.perf_counter() - debut, 2)
@@ -76,6 +83,7 @@ def main_game_loop(matrix, save_filename=None):
                 print(data)
                 pygame.quit()
                 creer_graph(data)
+                creer_graph_exec(data)
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Gérer les clics de souris
@@ -112,7 +120,7 @@ def main_game_loop(matrix, save_filename=None):
                     m = x // taille_cellule
                     matrix[n, m] = 1 if matrix[n, m] == 0 else 0
         # Set les données pour analyse
-        data = save_data(temps, data, matrix)
+        data = save_data(temps, data, exect_time, matrix)
 
         # Limiter la vitesse de la boucle
         clock.tick(10)
