@@ -15,7 +15,6 @@ def draw_button(screen, font, text, x, y, padding=10, height=30):
     screen.blit(text_surface, text_rect)
     
     # Initialiser les boutons Zoom avant de les utiliser dans la boucle principale
-    button_zoom_in_rect = draw_button(screen, font, "Zoom +", 200, HAUTEUR + 10)
-    button_zoom_out_rect = draw_button(screen, font, "Zoom -", 200, HAUTEUR + 50)
+
     
     return button_rect
