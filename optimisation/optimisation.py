@@ -19,7 +19,7 @@ def evaluate_alive(matrix, n, m):
     return 1 if np.sum(neighbors) in [2, 3] else 0
 
 
-def evaluate(matrix, active_cells, TAILLE_GRILLE):
+def evaluate_oppty(matrix, active_cells, TAILLE_GRILLE):
     if len(active_cells)> 12.5*TAILLE_GRILLE**2/100:
         matrix, active_cells = evaluate_all(matrix, active_cells)
     else:
@@ -50,7 +50,7 @@ def evaluate_select(matrix, active_cells):
         (active_n,active_m) = active_cell
         new_matrix[active_n][active_m] = evaluate_alive(matrix, active_n,active_m)
         print(new_matrix[active_n][active_m])
-        neighbors = find_neighbors_coord(matrix,active_n,active_m)
+        neighbors = find_neighbors(matrix,active_n,active_m)
         for neighbor in neighbors:
             print(neighbor)
             (neighbor_n,neighbor_m) = neighbor

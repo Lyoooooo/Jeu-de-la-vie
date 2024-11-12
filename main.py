@@ -16,7 +16,7 @@ pygame.init()
 
 # Dimensions de la fenêtre et des cellules
 TAILLE_CELLULE = 5  # Taille de chaque cellule dans la grille
-TAILLE_GRILLE = 100  # Nombre de cellules par côté
+TAILLE_GRILLE = 80  # Nombre de cellules par côté
 LARGEUR = HAUTEUR = TAILLE_GRILLE * TAILLE_CELLULE *1.5 # Taille de la grille
 LARGEUR_TOTALE = LARGEUR  # Largeur totale de la fenêtre
 HAUTEUR_TOTALE = HAUTEUR + 100  # Hauteur totale de la fenêtre avec espace pour les boutons
