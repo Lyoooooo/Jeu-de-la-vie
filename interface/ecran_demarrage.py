@@ -12,10 +12,11 @@ def start_screen(screen, largeur, hauteur, font):
     screen.blit(title_text, (largeur // 2 - title_text.get_width() // 2, hauteur // 4))
 
     button_new_game = draw_button(screen, font, "Nouvelle Partie", largeur // 2 - 100, hauteur // 2)
-    button_load_game = draw_button(screen, font, "Charger Partie", largeur // 2 - 100, hauteur // 2 + 50)
+    button_new_random = draw_button(screen, font, "Nouvelle Partie Aleatoire", largeur // 2 - 100, hauteur // 2 + 50)
+    button_load_game = draw_button(screen, font, "Charger Partie", largeur // 2 - 100, hauteur // 2 + 100)
     pygame.display.flip()
     
-    return button_new_game, button_load_game
+    return button_new_game, button_load_game, button_new_random
 
 def select_save_screen(screen, largeur, hauteur, font):
     saves = list_saves()

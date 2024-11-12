@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 import time
-from moteur_jeu.gestion_matrice import init_matrix
+from moteur_jeu.gestion_matrice import init_matrix, generate_random
 from moteur_jeu.evaluation import evaluate
 from interface.affichage_grille import draw_matrix
 from interface.boutons import draw_button
@@ -130,7 +130,7 @@ def main_game_loop(matrix, save_filename=None):
 # Boucle du menu principal
 while True:
     # Afficher l'écran de démarrage avec les options Nouvelle Partie et Charger Partie
-    button_new_game, button_load_game = start_screen(screen, LARGEUR, HAUTEUR, font)
+    button_new_game, button_load_game, button_new_random = start_screen(screen, LARGEUR, HAUTEUR, font)
     selected_matrix = None  # Initialisation de la matrice sélectionnée
 
     # Boucle pour gérer les événements dans le menu principal
@@ -146,6 +146,10 @@ while True:
                 if button_new_game.collidepoint(event.pos):
                     # Si Nouvelle Partie est sélectionnée
                     selected_matrix = init_matrix(TAILLE_GRILLE)
+                    main_game_loop(selected_matrix)  # Lancer la boucle de jeu
+                    menu_running = False  # Sortir de la boucle de menu pour revenir au jeu
+                elif button_new_random.collidepoint(event.pos):
+                    selected_matrix = generate_random(TAILLE_GRILLE)
                     main_game_loop(selected_matrix)  # Lancer la boucle de jeu
                     menu_running = False  # Sortir de la boucle de menu pour revenir au jeu
                 elif button_load_game.collidepoint(event.pos):
