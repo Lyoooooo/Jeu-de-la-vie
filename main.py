@@ -80,7 +80,6 @@ def main_game_loop(matrix, save_filename=None):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 # Quitter le jeu si l'utilisateur ferme la fenêtre
-                print(data)
                 pygame.quit()
                 creer_graph(data)
                 creer_graph_exec(data)
