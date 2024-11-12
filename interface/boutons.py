@@ -14,7 +14,4 @@ def draw_button(screen, font, text, x, y, padding=10, height=30):
     text_rect.center = button_rect.center
     screen.blit(text_surface, text_rect)
     
-    # Initialiser les boutons Zoom avant de les utiliser dans la boucle principale
-
-    
     return button_rect
